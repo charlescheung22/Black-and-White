@@ -1,24 +1,24 @@
 import os
-from random import choice
+from random import choice, choices
 from PIL import Image, ImageOps
-from typing import Any
 
 
 # Image packs to be used:
 class ImagePack:
     """This class contains all the images needed. Instantiate this once to get images."""
-    def __init__(self, invert: bool, rotate: bool, random_images: bool, sources: list[str]) -> None:
+    def __init__(self, invert: bool, rotate: bool, random_images: bool, sources: dict[str, int]) -> None:
         # TODO: image weighting
         self.invert = invert  # randomly invert colors
         self.rotate = rotate  # randomly rotate images
-        self.sources = sources  # Directory location
+        self.sources = sources  # Mapping image packs to weights
         self.collection = dict()
+        self.odds = self.sources.values()  # Not a percentage-based number; it is in proportion to all other weights
 
         # Process images
         if random_images:
             for (dirpath, dirnames, filenames) in os.walk(os.path.join(os.getcwd(), "ImagePacks")):
                 for filename in filenames:
-                    if filename.endswith((".png", ".jpg", ".jpeg")) and os.path.split(dirpath)[1] != "info":
+                    if filename.endswith((".png", ".jpg", ".jpeg")) and os.path.split(dirpath)[1] != "info" and os.path.split(os.path.split(dirpath)[0])[1] in self.sources.keys():
                         self.collection[os.path.split(os.path.split(dirpath)[0])[1]] = self.collection.get(os.path.split(os.path.split(dirpath)[0])[1], [])
                         self.collection.get(os.path.split(os.path.split(dirpath)[0])[1]).append(Image.open(os.sep.join([dirpath, filename])))
 
@@ -26,7 +26,7 @@ class ImagePack:
             # Assumed path location: ".\ImagePacks\ImagePack1...etc\1x1, info, etc\123.png # TODO get rid of shitty hardcode
             with os.scandir("ImagePacks") as main_imgp:
                 for dir_imgp in main_imgp:
-                    if dir_imgp.is_dir() and dir_imgp.name in self.sources:
+                    if dir_imgp.is_dir() and dir_imgp.name in self.sources.keys():
                         self.collection[dir_imgp.name] = []
                         with os.scandir(str("ImagePacks" + "\\" + dir_imgp.name)) as sub_dir_imgp:
                             for side_dir_imgp in sub_dir_imgp:
@@ -38,7 +38,7 @@ class ImagePack:
 
 
     def choice_unweighted(self) -> Image:
-        return choice(self.collection.get(choice(list(self.collection.keys()))))
+        return choice(self.collection.get(choices(list(self.sources.keys()), weights=list(self.sources.values()), k=1)[0]))
 
 
 # Constants
@@ -47,8 +47,11 @@ SPACING = 8         # Spacing in between every tile
 IMAGE_SIZE = 128    # Side length on one image tile
 WIDTH = 4           # Number of tiles length-wise
 HEIGHT = 8          # Number of tiles height-wise
-SRC = ["ImagePack1 - corners", "ImagePack2 - arrows", "ImagePack3 - curves"]
-INVERT_FINAL_IMAGE = True
+SRC = {"ImagePack1 - corners": 50,
+       "ImagePack2 - arrows": 25,
+       "ImagePack3 - curves": 25,
+       "ImagePack4 - shapes": 5}  # Dictionary mapping each image pack to its weight
+INVERT_FINAL_IMAGE = False
 
 pack = ImagePack(invert=True, rotate=True, random_images=True, sources=SRC)
 
