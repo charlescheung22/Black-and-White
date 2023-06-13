@@ -13,24 +13,28 @@ HEIGHT = 8          # Number of tiles height-wise
 
 # Image packs to be used:
 class ImagePack:
-    def __init__(self, number: int, use: bool, invert: bool, rotate: bool, source: str) -> None:
+    """This class contains all the images needed. Instantiate this once to get images."""
+    def __init__(self, invert: bool, rotate: bool, sources: list[str]) -> None:
         # TODO: image weighting
-        self.number = number  # Specify which image pack
-        self.use = use  # use this image pack
         self.invert = invert  # randomly invert colors
         self.rotate = rotate  # randomly rotate images
-        self.source = source  # Directory location
+        self.sources = sources  # Directory location
         self.collection = dict()
 
         # Process images
-        with os.scandir(self.source) as directory_ls:
-            for subdirectory in directory_ls:
-                if subdirectory.name != "info" and subdirectory.is_dir():
-                    with os.scandir(self.source + "\\" + subdirectory.name) as subdirectory_ls:
-                        self.collection[subdirectory.name] = []
-                        for file in subdirectory_ls:
-                            if os.path.isfile(file):
-                                self.collection.get(subdirectory.name).append(Image.open(self.source + "\\" + subdirectory.name + "\\" + file.name))
+        # Assumed path location: ".\ImagePacks\ImagePack1...etc\1x1, info, etc\123.png # TODO get rid of shitty hardcode
+        with os.scandir("ImagePacks") as main_imgp:
+            for dir_imgp in main_imgp:
+                if dir_imgp.is_dir() and dir_imgp.name in self.sources:
+                    self.collection[dir_imgp.name] = []
+                    with os.scandir(str("ImagePacks" + "\\" + dir_imgp.name)) as sub_dir_imgp:
+                        for side_dir_imgp in sub_dir_imgp:
+                            if side_dir_imgp.is_dir() and side_dir_imgp.name != "info":
+                                with os.scandir(str("ImagePacks" + "\\" + dir_imgp.name + "\\" + side_dir_imgp.name)) as sub_sub_dir_imgp:
+                                    for file in sub_sub_dir_imgp:
+                                        if file.is_file():
+                                            self.collection.get(dir_imgp.name).append(Image.open("ImagePacks" + "\\" + dir_imgp.name + "\\" + side_dir_imgp.name + "\\" + file.name))
+
 
     def choice_unweighted(self) -> Image:
         return choice(self.collection.get(choice(list(self.collection.keys()))))
@@ -40,8 +44,7 @@ class ImagePack:
 if __name__ == "__main__":
 
     # Setup
-    ImagePackOne = ImagePack(1, True, True, True, "image pack 1")
-    ImagePacks = [ImagePackOne]
+    pack = ImagePack(True, True, ["ImagePack1 - corners", "ImagePack2 - arrows", "ImagePack3 - curves"])
 
     # Create a Pillow Image
     im = Image.new(mode="L", size=(2*BORDER_SIZE + (WIDTH + 1)*SPACING + WIDTH*IMAGE_SIZE, 2*BORDER_SIZE + (HEIGHT+1)*SPACING + HEIGHT*IMAGE_SIZE), color=(255,))
@@ -51,7 +54,6 @@ if __name__ == "__main__":
         for j in range(HEIGHT):
             pixel_position = ((BORDER_SIZE + (i+1)*SPACING + i*IMAGE_SIZE) + 1, (BORDER_SIZE + (j+1)*SPACING + j*IMAGE_SIZE) + 1)  # Since pixels start at (1, 1)
 
-            pack = choice(ImagePacks)
             tile = pack.choice_unweighted()
             tile = tile.convert("L")  # Conversion to Luminance mode to save memory: stores grayscale
             tile = tile.resize(size=(IMAGE_SIZE, IMAGE_SIZE))
