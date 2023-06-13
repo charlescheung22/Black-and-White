@@ -2,15 +2,16 @@ import os
 from random import choice
 from PIL import Image, ImageOps
 
+
 # Constants
-BORDER_SIZE = 72  # Border surrounding final picture
-SPACING = 8  # Spacing in between every tile
-IMAGE_SIZE = 128  # Side length on one image tile
-WIDTH = 4  # Number of tiles length-wise
-HEIGHT = 8  # Number of tiles height-wise
+BORDER_SIZE = 72    # Border surrounding final picture
+SPACING = 8         # Spacing in between every tile
+IMAGE_SIZE = 128    # Side length on one image tile
+WIDTH = 4           # Number of tiles length-wise
+HEIGHT = 8          # Number of tiles height-wise
+
 
 # Image packs to be used:
-
 class ImagePack:
     def __init__(self, number: int, use: bool, invert: bool, rotate: bool, source: str) -> None:
         # TODO: image weighting
@@ -36,8 +37,6 @@ class ImagePack:
 
 
 
-
-
 if __name__ == "__main__":
 
     # Setup
@@ -56,8 +55,8 @@ if __name__ == "__main__":
             tile = pack.choice_unweighted()
             tile = tile.convert("L")  # Conversion to Luminance mode to save memory: stores grayscale
             tile = tile.resize(size=(IMAGE_SIZE, IMAGE_SIZE))
-            if pack.invert and choice([False, True]):  # half and half chance
-                ImageOps.invert(tile)
+            if pack.invert and choice([False, True]):  # half-and-half chance
+                tile = ImageOps.invert(tile)
             if pack.rotate:
                 angle = choice([False, 90, 180, 270])
                 if angle:  # angle must be an integer degrees
@@ -67,9 +66,8 @@ if __name__ == "__main__":
             im.paste(tile, box=pixel_position)
 
 
-    # # Choose RANDOMLY and insert image tiles from selections  # TODO Can put in larger tiles of images later
+    # # Choose RANDOMLY and insert image tiles from selections  # TODO Can make it work with putting in larger tiles of images later
     # tile_tracker = [[False for j in range(HEIGHT)] for i in range(WIDTH)]  # represents a grid of which spaces where there are tiles iff True
-
 
 
     # Finally, either save the image or show it.
