@@ -10,4 +10,5 @@ directories named "info" inside of image packs are ignored (hardcoded because I 
 TODO for future: 
 make nice algorithm that groups together tiles that go together (random doesn't look as good)
 
+BTW everything is hardcoded since I'm too lazy to use clean architecture and solid principles. :trollface:
 
