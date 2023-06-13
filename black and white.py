@@ -51,7 +51,7 @@ SRC = {"ImagePack1 - corners": 50,
        "ImagePack2 - arrows": 25,
        "ImagePack3 - curves": 25,
        "ImagePack4 - shapes": 5}  # Dictionary mapping each image pack to its weight
-INVERT_FINAL_IMAGE = False
+INVERT_FINAL_IMAGE = True
 
 pack = ImagePack(invert=True, rotate=True, random_images=True, sources=SRC)
 
