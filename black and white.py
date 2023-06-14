@@ -42,25 +42,28 @@ class ImagePack:
 
 
 # Constants
-BORDER_SIZE = 72    # Border surrounding final picture
+BORDER_SIZE = 80    # Border surrounding final picture
 SPACING = 8         # Spacing in between every tile
 IMAGE_SIZE = 128    # Side length on one image tile
-WIDTH = 4           # Number of tiles length-wise
-HEIGHT = 8          # Number of tiles height-wise
-SRC = {"ImagePack1 - corners": 50,
-       "ImagePack2 - arrows": 25,
-       "ImagePack3 - curves": 25,
-       "ImagePack4 - shapes": 5}  # Dictionary mapping each image pack to its weight
-INVERT_FINAL_IMAGE = True
+WIDTH = 8           # Number of tiles length-wise
+HEIGHT = 16         # Number of tiles height-wise
+BG_COLOR = (0,)   # Luminosity of the background
+# SRC = {"ImagePack1 - corners": 50,
+#        "ImagePack2 - arrows": 25,
+#        "ImagePack3 - curves": 25,
+#        "ImagePack4 - shapes": 5}  # Dictionary mapping each image pack to its weight
+SRC = {"Theme 1 - white square": 25,
+       "Theme 1 - white decay": 100}  # for Theme 1
+INVERT_FINAL_IMAGE = False
 
-pack = ImagePack(invert=True, rotate=True, random_images=True, sources=SRC)
+pack = ImagePack(invert=False, rotate=True, random_images=True, sources=SRC)
 
 
 
 if __name__ == "__main__":
 
     # Create a Pillow Image
-    im = Image.new(mode="L", size=(2*BORDER_SIZE + (WIDTH + 1)*SPACING + WIDTH*IMAGE_SIZE, 2*BORDER_SIZE + (HEIGHT+1)*SPACING + HEIGHT*IMAGE_SIZE), color=(255,))
+    im = Image.new(mode="L", size=(2*BORDER_SIZE + (WIDTH + 1)*SPACING + WIDTH*IMAGE_SIZE, 2*BORDER_SIZE + (HEIGHT+1)*SPACING + HEIGHT*IMAGE_SIZE), color=BG_COLOR)
 
     # Choose and insert image tiles from selections  # IN ORDER
     for i in range(WIDTH):
