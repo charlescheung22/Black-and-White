@@ -45,15 +45,15 @@ class ImagePack:
 BORDER_SIZE = 80    # Border surrounding final picture
 SPACING = 8         # Spacing in between every tile
 IMAGE_SIZE = 128    # Side length on one image tile
-WIDTH = 8           # Number of tiles length-wise
-HEIGHT = 16         # Number of tiles height-wise
-BG_COLOR = (0,)   # Luminosity of the background
-# SRC = {"ImagePack1 - corners": 50,
-#        "ImagePack2 - arrows": 25,
-#        "ImagePack3 - curves": 25,
-#        "ImagePack4 - shapes": 5}  # Dictionary mapping each image pack to its weight
-SRC = {"Theme 1 - white square": 25,
-       "Theme 1 - white decay": 100}  # for Theme 1
+WIDTH = 4           # Number of tiles length-wise
+HEIGHT = 8         # Number of tiles height-wise
+BG_COLOR = (0,)   # tuple: Luminosity of the background
+SRC = {"Image Pack 1 - corners": 50,
+       "Image Pack 2 - arrows": 15,
+       "Image Pack 3 - curves": 25,
+       "Image Pack 4 - shapes": 5}  # Dictionary mapping each image pack to its weight
+# SRC = {"Theme 1 - white square": 25,
+#        "Theme 1 - white decay": 100}  # for Theme 1
 INVERT_FINAL_IMAGE = False
 
 pack = ImagePack(invert=False, rotate=True, random_images=True, sources=SRC)
