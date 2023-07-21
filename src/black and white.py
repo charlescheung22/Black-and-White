@@ -16,15 +16,15 @@ class ImagePack:
 
         # Process images
         if random_images:
-            for (dirpath, dirnames, filenames) in os.walk(os.path.join(os.getcwd(), "ImagePacks")):
+            for (dirpath, dirnames, filenames) in os.walk(os.path.join(os.getcwd(), "..\\ImagePacks")):
                 for filename in filenames:
                     if filename.endswith((".png", ".jpg", ".jpeg")) and os.path.split(dirpath)[1] != "info" and os.path.split(os.path.split(dirpath)[0])[1] in self.sources.keys():
                         self.collection[os.path.split(os.path.split(dirpath)[0])[1]] = self.collection.get(os.path.split(os.path.split(dirpath)[0])[1], [])
                         self.collection.get(os.path.split(os.path.split(dirpath)[0])[1]).append(Image.open(os.sep.join([dirpath, filename])))
 
         else:
-            # Assumed path location: ".\ImagePacks\ImagePack1...etc\1x1, info, etc\123.png # TODO get rid of shitty hardcode
-            with os.scandir("ImagePacks") as main_imgp:
+            # Assumed path location: "..\ImagePacks\ImagePack1...etc\1x1, info, etc\123.png # TODO get rid of shitty hardcode
+            with os.scandir("..\ImagePacks") as main_imgp:
                 for dir_imgp in main_imgp:
                     if dir_imgp.is_dir() and dir_imgp.name in self.sources.keys():
                         self.collection[dir_imgp.name] = []
